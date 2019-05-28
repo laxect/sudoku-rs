@@ -46,7 +46,7 @@ mod test {
     #[test]
     fn set() {
         let mut bitset = BitSet::new();
-        bitset.set(1);
+        bitset.set(1).unwrap();
         assert_eq!(bitset.inner, 2);
     }
     #[test]
@@ -58,9 +58,9 @@ mod test {
     #[test]
     fn and() {
         let mut bitset_one = BitSet::new();
-        bitset_one.set(1);
+        bitset_one.set(1).unwrap();
         let mut bitset_another = BitSet::new();
-        bitset_another.set(0);
+        bitset_another.set(0).unwrap();
         bitset_one.and(bitset_another);
         assert!(bitset_one.get(0).unwrap());
         assert!(bitset_one.get(1).unwrap());
@@ -68,20 +68,19 @@ mod test {
     #[test]
     fn count() {
         let mut bitset = BitSet::new();
-        let keys = vec![0, 1, 2, 1];
-        bitset.set(0);
-        bitset.set(1);
-        bitset.set(2);
-        bitset.set(1);
+        bitset.set(0).unwrap();
+        bitset.set(1).unwrap();
+        bitset.set(2).unwrap();
+        bitset.set(1).unwrap();
         assert_eq!(bitset.inner, 7);
         assert_eq!(bitset.count(), 3);
     }
     #[test]
     fn remove() {
         let mut bitset = BitSet::new();
-        bitset.set(1);
-        bitset.set(2);
-        bitset.remove(1);
+        bitset.set(1).unwrap();
+        bitset.set(2).unwrap();
+        bitset.remove(1).unwrap();
         assert_eq!(bitset.inner, 4);
     }
 }
