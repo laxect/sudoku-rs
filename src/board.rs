@@ -1,18 +1,32 @@
-use crate::error::*;
+use crate::{bitset::BitSet, error::*};
 
 #[derive(Default)]
 pub struct Board {
     inner: Vec<u8>,
+    mat: Vec<BitSet>,
+    x: Vec<BitSet>,
+    y: Vec<BitSet>,
 }
 
 impl Board {
     pub fn new() -> Self {
-        Board { inner: vec![0; 81] }
+        Board {
+            inner: vec![0; 81],
+            x: vec![BitSet::new(); 9],
+            y: vec![BitSet::new(); 9],
+            mat: vec![BitSet::new(); 9],
+        }
     }
 
     pub fn unchecked_set(&mut self, x: usize, y: usize, val: u8) {
         let pos = x * 9 + y;
+        if self.inner[pos] != 0 {
+        }
         self.inner[pos] = val;
+        self.x[x].set(val).expect("x: out of bound");
+        self.y[y].set(val).expect("y: out of bound");
+        let mat_id = (x / 3 * 3) + (y / 3);
+        self.mat[mat_id].set(val).expect("mat: out of bound");
     }
 
     pub fn unchecked_get(&self, x: usize, y: usize) -> Option<u8> {

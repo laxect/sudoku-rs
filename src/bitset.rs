@@ -1,6 +1,6 @@
 use crate::error::*;
 
-#[derive(Default)]
+#[derive(Default, Copy, Clone)]
 pub struct BitSet {
     inner: u16,
 }
@@ -10,7 +10,7 @@ impl BitSet {
         BitSet { inner: 0 }
     }
 
-    pub fn set(&mut self, key: usize) -> Result<(), SuDoKuError> {
+    pub fn set(&mut self, key: u8) -> Result<(), SuDoKuError> {
         if key >= 16 {
             return Err(SuDoKuError::OutOfBound);
         }
@@ -18,19 +18,25 @@ impl BitSet {
         Ok(())
     }
 
-    pub fn get(&self, key: usize) -> Result<bool, SuDoKuError> {
+    pub fn get(self, key: u8) -> Result<bool, SuDoKuError> {
         if key >= 16 {
             return Err(SuDoKuError::OutOfBound);
         }
         Ok(self.inner & (1 << key) != 0)
     }
 
-    pub fn and(&mut self, another: &Self) {
+    pub fn and(&mut self, another: Self) {
         self.inner |= another.inner;
     }
 
-    pub fn count(&self) -> usize {
+    pub fn count(self) -> usize {
         self.inner.count_ones() as usize
+    }
+
+    pub fn remove(&mut self, key: u8) -> Result<bool, SuDoKuError> {
+        let before = self.get(key)?;
+        self.inner &= !(1 << key);
+        Ok(before)
     }
 }
 
@@ -55,7 +61,7 @@ mod test {
         bitset_one.set(1);
         let mut bitset_another = BitSet::new();
         bitset_another.set(0);
-        bitset_one.and(&bitset_another);
+        bitset_one.and(bitset_another);
         assert!(bitset_one.get(0).unwrap());
         assert!(bitset_one.get(1).unwrap());
     }
@@ -69,5 +75,13 @@ mod test {
         bitset.set(1);
         assert_eq!(bitset.inner, 7);
         assert_eq!(bitset.count(), 3);
+    }
+    #[test]
+    fn remove() {
+        let mut bitset = BitSet::new();
+        bitset.set(1);
+        bitset.set(2);
+        bitset.remove(1);
+        assert_eq!(bitset.inner, 4);
     }
 }
