@@ -7,18 +7,16 @@ pub struct Board {
 
 impl Board {
     pub fn new() -> Board {
-        Board {
-            inner: vec![0; 81]
-        }
+        Board { inner: vec![0; 81] }
     }
 
     pub fn unchecked_set(&mut self, x: usize, y: usize, val: u8) {
-        let pos = x*9 + y;
+        let pos = x * 9 + y;
         self.inner[pos] = val;
     }
 
     pub fn unchecked_get(&self, x: usize, y: usize) -> Option<u8> {
-        let pos = x*9 + y;
+        let pos = x * 9 + y;
         let val = self.inner[pos];
         if val > 0 && val < 10 {
             Some(val)
@@ -43,5 +41,20 @@ impl Board {
             return Err(SuDoKuError::OutOfBound);
         }
         Ok(self.unchecked_get(x, y))
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn set_edge_0() {
+        let mut board = Board::new();
+        board.set(0, 0, 1);
+    }
+    #[test]
+    fn set_edge_81() {
+        let mut board = Board::new();
+        board.set(8, 8, 9);
     }
 }
