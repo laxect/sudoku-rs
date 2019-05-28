@@ -6,7 +6,7 @@ pub struct Board {
 }
 
 impl Board {
-    pub fn new() -> Board {
+    pub fn new() -> Self {
         Board { inner: vec![0; 81] }
     }
 
