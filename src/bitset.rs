@@ -52,7 +52,7 @@ impl BitOr for BitSet {
 
     fn bitor(self, rhs: Self) -> Self {
         Self {
-            inner: self.inner | rhs.inner
+            inner: self.inner | rhs.inner,
         }
     }
 }

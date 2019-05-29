@@ -31,11 +31,29 @@ impl DfsSolver {
                 next.push_front(Action(x, y));
                 if let Some(end) = stack.pop() {
                     next.push_front(end);
+                    continue;
                 } else {
                     return Err(SuDoKuError::NotSolveable);
                 }
             }
-            let Some(now) = board.unchecked_get(x, y).unwrap_or(0);
+            let now = board.unchecked_get(x, y).unwrap_or(0);
+            let mut nxt = 0;
+            for i in avaliables.into_iter() {
+                if i > now {
+                    nxt = i;
+                    break;
+                }
+            }
+            if nxt == 0 {
+                next.push_front(Action(x, y));
+                if let Some(end) = stack.pop() {
+                    next.push_front(end);
+                    continue;
+                } else {
+                    return Err(SuDoKuError::NotSolveable);
+                }
+            }
+            board.unchecked_set(x, y, nxt);
         }
         Ok(stack)
     }

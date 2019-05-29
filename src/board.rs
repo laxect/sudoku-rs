@@ -1,4 +1,5 @@
 use crate::{bitset::BitSet, error::*};
+use std::fmt;
 
 #[derive(Default)]
 pub struct Board {
@@ -111,6 +112,26 @@ impl Board {
     }
 }
 
+impl fmt::Display for Board {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut matrix = String::new();
+        for x in 0..9 {
+            for y in 0..9 {
+                let val = self.unchecked_get(x, y).unwrap_or(0);
+                matrix.push(match val {
+                    0 => '_',
+                    n => (n + b'0').into(),
+                });
+                if y != 8 {
+                    matrix.push(' ');
+                }
+            }
+            matrix.push('\n');
+        }
+        write!(f, "{}", matrix)
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -148,5 +169,11 @@ mod test {
         board.set(1, 2, 3).unwrap();
         board.set(2, 3, 4).unwrap();
         assert_eq!(board.avaliable_val(1, 3), vec![1, 2, 5, 6, 7, 8, 9]);
+    }
+    #[test]
+    fn display() {
+        let mut board = Board::new();
+        board.set(1, 2, 3);
+        assert_eq!("_ _ _ _ _ _ _ _ _\n_ _ 3 _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n".to_string(), format!("{}", board));
     }
 }
