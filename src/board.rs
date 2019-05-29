@@ -65,11 +65,15 @@ impl Board {
         Ok(())
     }
 
-    pub fn get(self, x: usize, y: usize) -> Result<Option<u8>, SuDoKuError> {
+    pub fn get(&self, x: usize, y: usize) -> Result<Option<u8>, SuDoKuError> {
         if x >= 9 && y >= 9 {
             return Err(SuDoKuError::OutOfBound);
         }
         Ok(self.unchecked_get(x, y))
+    }
+
+    pub fn is_empty(&self, x: usize, y: usize) -> bool {
+        self.get(x, y).unwrap_or(Some(0)).is_none()
     }
 
     pub fn unset(&mut self, x: usize, y: usize) {
@@ -97,7 +101,7 @@ impl Board {
         let this = self.x[x] | self.y[y] | self.mat[mat_id];
         // return 0..9
         // but we need 1..=9
-        this.reverse(9).into_iter().map(|x| x+1).collect()
+        this.reverse(10).into_iter().filter(|x| *x != 0).collect()
     }
 
     pub fn is_win(&self) -> bool {
@@ -130,5 +134,19 @@ mod test {
         assert!(board.is_win());
         board.unchecked_set(0, 0, 1);
         assert!(!board.is_win());
+    }
+    #[test]
+    fn empty() {
+        let mut board = Board::new();
+        board.set(1, 2, 3);
+        assert!(!board.is_empty(1, 2));
+        assert!(board.is_empty(2, 3));
+    }
+    #[test]
+    fn avaliable_val() {
+        let mut board = Board::new();
+        board.set(1, 2, 3).unwrap();
+        board.set(2, 3, 4).unwrap();
+        assert_eq!(board.avaliable_val(1, 3), vec![1, 2, 5, 6, 7, 8, 9]);
     }
 }
