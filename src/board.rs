@@ -24,7 +24,10 @@ impl Board {
         for x in 0..9 {
             for y in 0..9 {
                 let pos = x * 9 + y;
-                board.unchecked_set(x, y, vec[pos]);
+                let val = vec[pos];
+                if val != 0 {
+                    board.unchecked_set(x, y, vec[pos]);
+                }
             }
         }
         board
@@ -93,16 +96,13 @@ impl Board {
 
     pub fn avaliable_val(&self, x: usize, y: usize) -> Vec<u8> {
         let pos = x * 9 + y;
-        // just a backup
-        // should not use this method when slot filled
-        if self.inner[pos] != 0 {
-            return Vec::new();
-        }
         let mat_id = (x / 3 * 3) + (y / 3);
-        let this = self.x[x] | self.y[y] | self.mat[mat_id];
+        let mut cross = self.x[x] | self.y[y] | self.mat[mat_id];
+        let this = self.inner[pos];
+        cross.remove(this).expect("range out");
         // return 0..9
         // but we need 1..=9
-        this.reverse(10).into_iter().filter(|x| *x != 0).collect()
+        cross.reverse(10).into_iter().filter(|x| *x != 0).collect()
     }
 
     pub fn is_win(&self) -> bool {
@@ -168,6 +168,7 @@ mod test {
         let mut board = Board::new();
         board.set(1, 2, 3).unwrap();
         board.set(2, 3, 4).unwrap();
+        board.set(1, 3, 7).unwrap();
         assert_eq!(board.avaliable_val(1, 3), vec![1, 2, 5, 6, 7, 8, 9]);
     }
     #[test]

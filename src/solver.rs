@@ -1,7 +1,7 @@
 use crate::{board::Board, error::SuDoKuError};
 use std::collections::VecDeque;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct Action(usize, usize);
 
 /// solve a sudoku
@@ -16,7 +16,6 @@ impl DfsSolver {
 
     // just find one solve
     pub fn solve(&self, board: &mut Board) -> Result<Vec<Action>, SuDoKuError> {
-        let mut stack = Vec::with_capacity(81);
         let mut next = VecDeque::with_capacity(81);
         for x in 0..9 {
             for y in 0..9 {
@@ -25,12 +24,15 @@ impl DfsSolver {
                 }
             }
         }
-        while let Some(Action(x, y)) = next.pop_front() {
+        let mut cur = 0;
+        while let Some(Action(xr, yr)) = next.get(cur) {
+            let x = *xr;
+            let y = *yr;
             let avaliables = board.avaliable_val(x, y);
             if avaliables.is_empty() {
-                next.push_front(Action(x, y));
-                if let Some(end) = stack.pop() {
-                    next.push_front(end);
+                if cur != 0 {
+                    cur -= 1;
+                    board.unset(x, y);
                     continue;
                 } else {
                     return Err(SuDoKuError::NotSolveable);
@@ -46,18 +48,18 @@ impl DfsSolver {
             }
             if nxt == 0 {
                 // no avaliable slot
-                next.push_front(Action(x, y));
-                if let Some(end) = stack.pop() {
-                    next.push_front(end);
+                if cur != 0 {
+                    cur -= 1;
+                    board.unset(x, y);
                 } else {
                     return Err(SuDoKuError::NotSolveable);
                 }
             } else {
-                stack.push(Action(x, y));
+                cur += 1;
                 board.unchecked_set(x, y, nxt);
             }
         }
-        Ok(stack)
+        Ok(next.into())
     }
 }
 
@@ -67,18 +69,24 @@ mod test {
     #[test]
     fn solve() {
         let mut board = Board::from_vec(vec![
-            0, 0, 0, 2, 0, 8, 7, 0, 9,
-            0, 4, 0, 1, 0, 0, 0, 0, 0,
-            0, 6, 0, 0, 0, 3, 0, 0, 0,
-            0, 8, 7, 0, 0, 4, 3, 0, 5,
-            6, 0, 0, 0, 5, 9, 0, 0, 1,
-            1, 9, 0, 3, 0, 2, 0, 0, 0,
-            9, 0, 8, 5, 2, 6, 1, 0, 3,
-            5, 1, 6, 4, 3, 7, 9, 2, 8,
-            4, 2, 0, 8, 0, 0, 6, 5, 7,
+            0, 0, 0, 2, 0, 8, 7, 0, 9, 0, 4, 0, 1, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 3, 0, 0, 0, 0, 8,
+            7, 0, 0, 4, 3, 0, 5, 6, 0, 0, 0, 5, 9, 0, 0, 1, 1, 9, 0, 3, 0, 2, 0, 0, 0, 9, 0, 8, 5,
+            2, 6, 1, 0, 3, 5, 1, 6, 4, 3, 7, 9, 2, 8, 4, 2, 0, 8, 0, 0, 6, 5, 7,
         ]);
         let solver = DfsSolver::new();
-        assert!(!solver.solve(&mut board).is_ok());
-        assert_eq!("".to_string(), format!("{}", board));
+        assert!(solver.solve(&mut board).is_ok());
+        assert_eq!(
+            "3 5 1 2 4 8 7 6 9
+7 4 9 1 6 5 8 3 2
+8 6 2 9 7 3 5 1 4
+2 8 7 6 1 4 3 9 5
+6 3 4 7 5 9 2 8 1
+1 9 5 3 8 2 4 7 6
+9 7 8 5 2 6 1 4 3
+5 1 6 4 3 7 9 2 8
+4 2 3 8 9 1 6 5 7\n"
+                .to_string(),
+            format!("{}", board)
+        );
     }
 }
