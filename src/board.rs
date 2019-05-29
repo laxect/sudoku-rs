@@ -159,7 +159,7 @@ mod test {
     #[test]
     fn empty() {
         let mut board = Board::new();
-        board.set(1, 2, 3);
+        board.set(1, 2, 3).unwrap();
         assert!(!board.is_empty(1, 2));
         assert!(board.is_empty(2, 3));
     }
@@ -173,7 +173,7 @@ mod test {
     #[test]
     fn display() {
         let mut board = Board::new();
-        board.set(1, 2, 3);
+        board.set(1, 2, 3).unwrap();
         assert_eq!("_ _ _ _ _ _ _ _ _\n_ _ 3 _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n".to_string(), format!("{}", board));
     }
 }
