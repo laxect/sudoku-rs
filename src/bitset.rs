@@ -1,4 +1,5 @@
 use crate::error::*;
+use std::ops::BitOr;
 
 #[derive(Default, Copy, Clone)]
 pub struct BitSet {
@@ -25,10 +26,6 @@ impl BitSet {
         Ok(self.inner & (1 << key) != 0)
     }
 
-    pub fn and(&mut self, another: Self) {
-        self.inner |= another.inner;
-    }
-
     pub fn count(self) -> usize {
         self.inner.count_ones() as usize
     }
@@ -37,6 +34,26 @@ impl BitSet {
         let before = self.get(key)?;
         self.inner &= !(1 << key);
         Ok(before)
+    }
+
+    pub fn reverse(self, range: u8) -> Vec<u8> {
+        let mut res = Vec::new();
+        for i in 0..range {
+            if !self.get(i).unwrap_or(true) {
+                res.push(i);
+            }
+        }
+        res
+    }
+}
+
+impl BitOr for BitSet {
+    type Output = Self;
+
+    fn bitor(self, rhs: Self) -> Self {
+        Self {
+            inner: self.inner | rhs.inner
+        }
     }
 }
 
@@ -61,9 +78,9 @@ mod test {
         bitset_one.set(1).unwrap();
         let mut bitset_another = BitSet::new();
         bitset_another.set(0).unwrap();
-        bitset_one.and(bitset_another);
-        assert!(bitset_one.get(0).unwrap());
-        assert!(bitset_one.get(1).unwrap());
+        let bitset_and = bitset_one | bitset_another;
+        assert!(bitset_and.get(0).unwrap());
+        assert!(bitset_and.get(1).unwrap());
     }
     #[test]
     fn count() {
@@ -82,5 +99,13 @@ mod test {
         bitset.set(2).unwrap();
         bitset.remove(1).unwrap();
         assert_eq!(bitset.inner, 4);
+    }
+    #[test]
+    fn reverse() {
+        let mut bitset = BitSet::new();
+        bitset.set(1).unwrap();
+        bitset.set(2).unwrap();
+        let v = bitset.reverse(4);
+        assert_eq!(v, vec![0, 3]);
     }
 }

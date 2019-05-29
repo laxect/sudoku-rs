@@ -65,11 +65,39 @@ impl Board {
         Ok(())
     }
 
-    pub fn get(&mut self, x: usize, y: usize) -> Result<Option<u8>, SuDoKuError> {
+    pub fn get(self, x: usize, y: usize) -> Result<Option<u8>, SuDoKuError> {
         if x >= 9 && y >= 9 {
             return Err(SuDoKuError::OutOfBound);
         }
         Ok(self.unchecked_get(x, y))
+    }
+
+    pub fn unset(&mut self, x: usize, y: usize) {
+        let pos = x * 9 + y;
+        let mat_id = (x / 3 * 3) + (y / 3);
+        let before = self.inner[pos];
+        if before != 0 {
+            self.x[x].remove(before).expect("x: should be a value");
+            self.y[y].remove(before).expect("y: should be a value");
+            self.mat[mat_id]
+                .remove(before)
+                .expect("mat: should be a value");
+            self.inner[pos] = 0;
+        }
+    }
+
+    pub fn avaliable_val(&self, x: usize, y: usize) -> Vec<u8> {
+        let pos = x * 9 + y;
+        // just a backup
+        // should not use this method when slot filled
+        if self.inner[pos] != 0 {
+            return Vec::new();
+        }
+        let mat_id = (x / 3 * 3) + (y / 3);
+        let this = self.x[x] | self.y[y] | self.mat[mat_id];
+        // return 0..9
+        // but we need 1..=9
+        this.reverse(9).into_iter().map(|x| x+1).collect()
     }
 
     pub fn is_win(&self) -> bool {

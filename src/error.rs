@@ -5,6 +5,7 @@ pub enum SuDoKuError {
     InvalidValue,
     OutOfBound,
     NotSolveable,
+    DuplicateValue,
 }
 
 impl fmt::Display for SuDoKuError {
