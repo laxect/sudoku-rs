@@ -173,6 +173,14 @@ mod test {
         assert!(board.is_empty(2, 3));
     }
     #[test]
+    fn avaliable_count() {
+        let mut board = Board::new();
+        board.set(1, 2, 3).unwrap();
+        board.set(2, 3, 4).unwrap();
+        board.set(1, 3, 7).unwrap();
+        assert_eq!(board.avaliable_count(1, 3), 7);
+    }
+    #[test]
     fn avaliable_val() {
         let mut board = Board::new();
         board.set(1, 2, 3).unwrap();
