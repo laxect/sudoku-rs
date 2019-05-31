@@ -1,6 +1,5 @@
 #[macro_use]
 extern crate criterion;
-extern crate sudoku;
 
 use criterion::{black_box, Criterion};
 
