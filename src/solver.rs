@@ -1,5 +1,4 @@
 use crate::{board::Board, error::SuDoKuError};
-use superslice::*;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Slot(usize, usize, usize);
@@ -20,13 +19,17 @@ impl DfsSolver {
         for x in 0..9 {
             for y in 0..9 {
                 if board.is_empty(x, y) {
+                    // (x, y, avaliable_count)
                     queue.push(Slot(x, y, board.avaliable_count(x, y)));
                 }
             }
         }
+        // avaliable count no use now
         queue.sort_unstable_by(|a, b| a.2.cmp(&b.2));
+        queue.iter_mut().for_each(|item| item.2 = 0);
         let mut cur = 0;
-        while let Some(Slot(xr, yr, _)) = queue.get(cur) {
+        // (x, y, last_ind)
+        while let Some(Slot(xr, yr, ind)) = queue.get_mut(cur) {
             let x = *xr;
             let y = *yr;
             let avaliables = board.avaliable_val(x, y);
@@ -34,29 +37,27 @@ impl DfsSolver {
                 if cur != 0 {
                     cur -= 1;
                     board.unset(x, y);
+                    *ind = 0;
                     continue;
                 } else {
                     return Err(SuDoKuError::NotSolveable);
                 }
             }
-            let now = board.unchecked_get(x, y).unwrap_or(0);
-            let mut nxt = 0;
-            let upper_pos = avaliables.upper_bound(&now);
-            if let Some(upper_than_now) = avaliables.get(upper_pos) {
-                nxt = *upper_than_now;
-            }
-            if nxt == 0 {
-                // no avaliable slot
+            if let Some(upper_than_now) = avaliables.get(*ind) {
+                cur += 1;
+                *ind += 1;
+                board.unchecked_set(x, y, *upper_than_now);
+            } else {
+                // no avaliable value
                 if cur != 0 {
                     cur -= 1;
                     board.unset(x, y);
+                    *ind = 0;
                 } else {
+                    // no avaliable slot
                     return Err(SuDoKuError::NotSolveable);
                 }
-            } else {
-                cur += 1;
-                board.unchecked_set(x, y, nxt);
-            }
+            } 
         }
         Ok(queue)
     }

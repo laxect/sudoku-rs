@@ -1,7 +1,4 @@
-#[macro_use]
-extern crate criterion;
-
-use criterion::{black_box, Criterion};
+use criterion::*;
 
 fn standard_sudoku(input: Vec<u8>) {
     let mut board = sudoku::board::Board::from_vec(input);

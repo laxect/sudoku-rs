@@ -1,21 +1,26 @@
 use crate::{bitset::BitSet, error::*};
 use std::fmt;
 
-#[derive(Default)]
 pub struct Board {
-    inner: Vec<u8>,
-    mat: Vec<BitSet>,
-    x: Vec<BitSet>,
-    y: Vec<BitSet>,
+    inner: [u8; 81],
+    mat: [BitSet; 9],
+    x: [BitSet; 9],
+    y: [BitSet; 9],
+}
+
+impl Default for Board {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Board {
     pub fn new() -> Self {
         Board {
-            inner: vec![0; 81],
-            x: vec![BitSet::new(); 9],
-            y: vec![BitSet::new(); 9],
-            mat: vec![BitSet::new(); 9],
+            inner: [0; 81],
+            x: [BitSet::new(); 9],
+            y: [BitSet::new(); 9],
+            mat: [BitSet::new(); 9],
         }
     }
 
