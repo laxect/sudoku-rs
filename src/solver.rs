@@ -46,7 +46,7 @@ impl DfsSolver {
                     // no avaliable slot
                     return Err(SuDoKuError::NotSolveable);
                 }
-            } 
+            }
         }
         Ok(queue)
     }
