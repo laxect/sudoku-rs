@@ -15,7 +15,7 @@ impl DfsSolver {
         DfsSolver {}
     }
 
-    // just find one solve
+    /// find a solve of sudoku in dfs way
     pub fn solve(&self, board: &mut Board) -> Result<Vec<Action>, SuDoKuError> {
         let mut next = VecDeque::with_capacity(81);
         for x in 0..9 {
