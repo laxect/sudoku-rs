@@ -1,9 +1,8 @@
 use crate::{board::Board, error::SuDoKuError};
-use std::collections::VecDeque;
 use superslice::*;
 
 #[derive(Copy, Clone, Debug)]
-pub struct Action(usize, usize);
+pub struct Slot(usize, usize, usize);
 
 /// solve a sudoku
 /// the dfs way
@@ -16,17 +15,18 @@ impl DfsSolver {
     }
 
     /// find a solve of sudoku in dfs way
-    pub fn solve(&self, board: &mut Board) -> Result<Vec<Action>, SuDoKuError> {
-        let mut next = VecDeque::with_capacity(81);
+    pub fn solve(&self, board: &mut Board) -> Result<Vec<Slot>, SuDoKuError> {
+        let mut queue = Vec::with_capacity(81);
         for x in 0..9 {
             for y in 0..9 {
                 if board.is_empty(x, y) {
-                    next.push_back(Action(x, y));
+                    queue.push(Slot(x, y, board.avaliable_count(x, y)));
                 }
             }
         }
+        queue.sort_unstable_by(|a, b| a.2.cmp(&b.2));
         let mut cur = 0;
-        while let Some(Action(xr, yr)) = next.get(cur) {
+        while let Some(Slot(xr, yr, _)) = queue.get(cur) {
             let x = *xr;
             let y = *yr;
             let avaliables = board.avaliable_val(x, y);
@@ -58,7 +58,7 @@ impl DfsSolver {
                 board.unchecked_set(x, y, nxt);
             }
         }
-        Ok(next.into())
+        Ok(queue)
     }
 }
 

@@ -105,6 +105,15 @@ impl Board {
         cross.reverse(10).into_iter().filter(|x| *x != 0).collect()
     }
 
+    pub fn avaliable_count(&self, x: usize, y: usize) -> usize {
+        let pos = x * 9 + y;
+        let mat_id = (x / 3 * 3) + (y / 3);
+        let mut cross = self.x[x] | self.y[y] | self.mat[mat_id];
+        let this = self.inner[pos];
+        cross.remove(this).expect("range out");
+        9 - cross.count()
+    }
+
     pub fn is_win(&self) -> bool {
         self.x.iter().filter(|bs| bs.count() == 9).count() == 9
             && self.y.iter().filter(|bs| bs.count() == 9).count() == 9
