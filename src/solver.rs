@@ -1,5 +1,6 @@
 use crate::{board::Board, error::SuDoKuError};
 use std::collections::VecDeque;
+use superslice::*;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Action(usize, usize);
@@ -40,11 +41,9 @@ impl DfsSolver {
             }
             let now = board.unchecked_get(x, y).unwrap_or(0);
             let mut nxt = 0;
-            for i in avaliables.into_iter() {
-                if i > now {
-                    nxt = i;
-                    break;
-                }
+            let upper_pos = avaliables.upper_bound(&now);
+            if let Some(upper_than_now) = avaliables.get(upper_pos) {
+                nxt = *upper_than_now;
             }
             if nxt == 0 {
                 // no avaliable slot
