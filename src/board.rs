@@ -105,9 +105,7 @@ impl Board {
         let mut cross = self.x[x] | self.y[y] | self.mat[mat_id];
         let this = self.inner[pos];
         cross.remove(this).expect("range out");
-        // return 0..9
-        // but we need 1..=9
-        cross.reverse(10).into_iter().filter(|x| *x != 0).collect()
+        cross.reverse(1..10)
     }
 
     pub fn avaliable_count(&self, x: usize, y: usize) -> usize {

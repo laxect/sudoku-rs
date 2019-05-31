@@ -32,18 +32,7 @@ impl DfsSolver {
         while let Some(Slot(xr, yr, ind)) = queue.get_mut(cur) {
             let x = *xr;
             let y = *yr;
-            let avaliables = board.avaliable_val(x, y);
-            if avaliables.is_empty() {
-                if cur != 0 {
-                    cur -= 1;
-                    board.unset(x, y);
-                    *ind = 0;
-                    continue;
-                } else {
-                    return Err(SuDoKuError::NotSolveable);
-                }
-            }
-            if let Some(upper_than_now) = avaliables.get(*ind) {
+            if let Some(upper_than_now) = board.avaliable_val(x, y).get(*ind) {
                 cur += 1;
                 *ind += 1;
                 board.unchecked_set(x, y, *upper_than_now);

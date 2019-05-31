@@ -36,9 +36,9 @@ impl BitSet {
         Ok(before)
     }
 
-    pub fn reverse(self, range: u8) -> Vec<u8> {
+    pub fn reverse(self, range: std::ops::Range<u8>) -> Vec<u8> {
         let mut res = Vec::new();
-        for i in 0..range {
+        for i in range {
             if !self.get(i).unwrap_or(true) {
                 res.push(i);
             }
@@ -105,7 +105,7 @@ mod test {
         let mut bitset = BitSet::new();
         bitset.set(1).unwrap();
         bitset.set(2).unwrap();
-        let v = bitset.reverse(4);
+        let v = bitset.reverse(0..4);
         assert_eq!(v, vec![0, 3]);
     }
 }
