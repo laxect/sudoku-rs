@@ -1,11 +1,11 @@
 # sudoku-rs
 sudoku solve lib
 
-![build status](https://travis-ci.org/laxect/sudoku-rs.svg?branch=master)
+<a href="https://travis-ci.org/laxect/sudoku-rs"><img scr="https://travis-ci.org/laxect/sudoku-rs.svg?branch=master">build status<img></a>
 
 next to do
 
  - [x] dfs solve
  - [ ] unique check
- - [ ] sudoku grade
+ - [x] sudoku grade
  - [ ] sudoku gen
