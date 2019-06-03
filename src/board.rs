@@ -1,6 +1,7 @@
 use crate::{bitset::BitSet, error::*};
 use std::fmt;
 
+/// board struct
 pub struct Board {
     inner: [u8; 81],
     mat: [BitSet; 9],
@@ -24,6 +25,24 @@ impl Board {
         }
     }
 
+    /// gen board from vec
+    /// the len of vec must be 81
+    /// 0 for empty and 1..=9 for value
+    /// ```
+    /// use sudoku_rs::board::Board;
+    /// 
+    /// let b = Board::from_vec(vec![
+    ///     0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ///     0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ///     0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ///     0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ///     0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ///     0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ///     0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ///     0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ///     0, 0, 0, 0, 0, 0, 0, 0, 0,
+    /// ]);
+    /// ```
     pub fn from_vec(vec: Vec<u8>) -> Self {
         let mut board = Board::new();
         for x in 0..9 {
@@ -38,6 +57,8 @@ impl Board {
         board
     }
 
+    /// set value in board but not check value
+    /// will also set bitset
     pub fn unchecked_set(&mut self, x: usize, y: usize, val: u8) {
         let pos = x * 9 + y;
         let mat_id = (x / 3 * 3) + (y / 3);
@@ -53,6 +74,8 @@ impl Board {
         self.mat[mat_id].set(val).expect("mat: out of bound");
     }
 
+    /// get value
+    /// return a `Option<u8>`
     pub fn unchecked_get(&self, x: usize, y: usize) -> Option<u8> {
         let pos = x * 9 + y;
         let val = self.inner[pos];
@@ -63,6 +86,7 @@ impl Board {
         }
     }
 
+    /// set value
     pub fn set(&mut self, x: usize, y: usize, val: u8) -> Result<(), SuDoKuError> {
         if x >= 9 && y >= 9 {
             return Err(SuDoKuError::OutOfBound);
@@ -74,6 +98,7 @@ impl Board {
         Ok(())
     }
 
+    /// get value
     pub fn get(&self, x: usize, y: usize) -> Result<Option<u8>, SuDoKuError> {
         if x >= 9 && y >= 9 {
             return Err(SuDoKuError::OutOfBound);
@@ -81,10 +106,20 @@ impl Board {
         Ok(self.unchecked_get(x, y))
     }
 
+    /// check a solt is empty of not
+    /// ```
+    /// use sudoku_rs::board::Board;
+    /// 
+    /// let mut b = Board::new();
+    /// b.set(1, 2, 3).unwrap();
+    /// assert!(b.is_empty(1, 1));
+    /// assert!(!b.is_empty(1, 2));
+    /// ```
     pub fn is_empty(&self, x: usize, y: usize) -> bool {
         self.get(x, y).unwrap_or(Some(0)).is_none()
     }
 
+    /// clear a slot
     pub fn unset(&mut self, x: usize, y: usize) {
         let pos = x * 9 + y;
         let mat_id = (x / 3 * 3) + (y / 3);
@@ -99,6 +134,7 @@ impl Board {
         }
     }
 
+    /// get avaliable values for a slot
     pub fn avaliable_val(&self, x: usize, y: usize) -> Vec<u8> {
         let pos = x * 9 + y;
         let mat_id = (x / 3 * 3) + (y / 3);
@@ -108,6 +144,7 @@ impl Board {
         cross.reverse(1..10)
     }
 
+    /// get avaliable values count for a slot
     pub fn avaliable_count(&self, x: usize, y: usize) -> usize {
         let pos = x * 9 + y;
         let mat_id = (x / 3 * 3) + (y / 3);
@@ -117,6 +154,7 @@ impl Board {
         9 - cross.count()
     }
 
+    /// check if a board is filled
     pub fn is_win(&self) -> bool {
         self.x.iter().filter(|bs| bs.count() == 9).count() == 9
             && self.y.iter().filter(|bs| bs.count() == 9).count() == 9

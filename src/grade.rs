@@ -11,7 +11,7 @@ pub struct Score {
 
 /// use human-like dfs algorithm for sudoku grade
 /// ```
-/// use sudoku::{board, grade};
+/// use sudoku_rs::{board, grade};
 /// 
 /// let mut b = board::Board::new();
 /// let g = grade::Grade::new();
