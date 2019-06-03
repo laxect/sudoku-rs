@@ -1,7 +1,7 @@
 # sudoku-rs
 sudoku solve lib
 
-<a href="https://travis-ci.org/laxect/sudoku-rs"><img scr="https://travis-ci.org/laxect/sudoku-rs.svg?branch=master">build status<img></a>
+<a href="https://travis-ci.org/laxect/sudoku-rs"><img src="https://travis-ci.org/laxect/sudoku-rs.svg?branch=master"></a>
 
 next to do
 
