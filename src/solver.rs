@@ -1,7 +1,6 @@
 use crate::{board::Board, error::SuDoKuError};
 
-#[derive(Copy, Clone, Debug)]
-pub struct Slot(usize, usize, usize);
+type Slot = (usize, usize, usize);
 
 /// solve a sudoku
 /// the dfs way
@@ -20,7 +19,7 @@ impl DfsSolver {
             for y in 0..9 {
                 if board.is_empty(x, y) {
                     // (x, y, avaliable_count)
-                    queue.push(Slot(x, y, board.avaliable_count(x, y)));
+                    queue.push((x, y, board.avaliable_count(x, y)));
                 }
             }
         }
@@ -29,7 +28,7 @@ impl DfsSolver {
         queue.iter_mut().for_each(|item| item.2 = 0);
         let mut cur = 0;
         // (x, y, last_ind)
-        while let Some(Slot(xr, yr, ind)) = queue.get_mut(cur) {
+        while let Some((xr, yr, ind)) = queue.get_mut(cur) {
             let x = *xr;
             let y = *yr;
             if let Some(upper_than_now) = board.avaliable_val(x, y).get(*ind) {
