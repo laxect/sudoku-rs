@@ -3,6 +3,8 @@ name = "sudoku_rs"
 version = "0.1.0"
 authors = ["laxect <me@gyara.moe>"]
 edition = "2018"
+description = "a package for sudoku in pure rust"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
