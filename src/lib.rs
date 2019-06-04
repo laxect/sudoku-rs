@@ -5,7 +5,7 @@
 //! use sudoku_rs::{board, solver};
 //!
 //! let mut b = board::Board::new();
-//! let mut s = solver::DfsSolver::new();
+//! let s = solver::DfsSolver::new();
 //! s.solve(&mut b);
 //! println!("{}", b);
 //! ```
@@ -15,7 +15,7 @@
 //! use sudoku_rs::{board, solver};
 //!
 //! let mut b = board::Board::new();
-//! let mut s = solver::DfsSolver::new();
+//! let s = solver::DfsSolver::new();
 //! assert!(!s.unique(&mut b).unwrap());
 //! ```
 //!

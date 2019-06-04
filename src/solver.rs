@@ -8,18 +8,16 @@ type Slot = (usize, usize, usize);
 /// use sudoku_rs::{board, solver};
 ///
 /// let mut b = board::Board::new();
-/// let mut s = solver::DfsSolver::new();
+/// let s = solver::DfsSolver::new();
 /// s.solve(&mut b);
 /// println!("{}", b);
 /// ```
 #[derive(Default, Clone)]
-pub struct DfsSolver {
-    path: Option<Vec<Slot>>,
-}
+pub struct DfsSolver {}
 
 impl DfsSolver {
     pub fn new() -> DfsSolver {
-        DfsSolver { path: None }
+        DfsSolver {}
     }
 
     /// check if the solve of a sudoku is unique
@@ -27,26 +25,22 @@ impl DfsSolver {
     /// use sudoku_rs::{board::Board, solver::DfsSolver};
     ///
     /// let mut board = Board::new();
-    /// let mut solver = DfsSolver::new();
+    /// let solver = DfsSolver::new();
     /// assert_eq!(solver.unique(&mut board).unwrap(), false);
     /// ```
-    pub fn unique(&mut self, board: &mut Board) -> Result<bool, SuDoKuError> {
-        self.path = None;
-        self.solve_do(board)?;
-        Ok(self.solve_do(board).is_err())
+    pub fn unique(&self, board: &mut Board) -> Result<bool, SuDoKuError> {
+        let path = Vec::with_capacity(81);
+        let path = self.solve_do(board, path)?;
+        Ok(self.solve_do(board, path).is_err())
     }
 
     /// find a solve of sudoku in dfs way
-    pub fn solve(&mut self, board: &mut Board) -> Result<Vec<Slot>, SuDoKuError> {
-        self.path = None;
-        self.solve_do(board)
+    pub fn solve(&self, board: &mut Board) -> Result<Vec<Slot>, SuDoKuError> {
+        let path = Vec::with_capacity(81);
+        self.solve_do(board, path)
     }
 
-    fn solve_do(&mut self, board: &mut Board) -> Result<Vec<Slot>, SuDoKuError> {
-        let mut queue = match self.path.take() {
-            Some(pre) => pre,
-            None => Vec::with_capacity(81),
-        };
+    fn solve_do(&self, board: &mut Board, mut queue: Vec<Slot>) -> Result<Vec<Slot>, SuDoKuError> {
         let mut cur = if queue.is_empty() {
             for x in 0..9 {
                 for y in 0..9 {
@@ -82,7 +76,6 @@ impl DfsSolver {
                 return Err(SuDoKuError::NotSolveable);
             }
         }
-        self.path.replace(queue.clone());
         Ok(queue)
     }
 }
@@ -97,7 +90,7 @@ mod test {
             7, 0, 0, 4, 3, 0, 5, 6, 0, 0, 0, 5, 9, 0, 0, 1, 1, 9, 0, 3, 0, 2, 0, 0, 0, 9, 0, 8, 5,
             2, 6, 1, 0, 3, 5, 1, 6, 4, 3, 7, 9, 2, 8, 4, 2, 0, 8, 0, 0, 6, 5, 7,
         ]);
-        let mut solver = DfsSolver::new();
+        let solver = DfsSolver::new();
         assert!(solver.solve(&mut board).is_ok());
         assert_eq!(
             "3 5 1 2 4 8 7 6 9
@@ -116,7 +109,7 @@ mod test {
     #[test]
     fn multi_solve() {
         let mut board = Board::new();
-        let mut solver = DfsSolver::new();
+        let solver = DfsSolver::new();
         assert_eq!(solver.unique(&mut board).unwrap(), false);
     }
     #[test]
@@ -126,7 +119,7 @@ mod test {
             7, 0, 0, 4, 3, 0, 5, 6, 0, 0, 0, 5, 9, 0, 0, 1, 1, 9, 0, 3, 0, 2, 0, 0, 0, 9, 0, 8, 5,
             2, 6, 1, 0, 3, 5, 1, 6, 4, 3, 7, 9, 2, 8, 4, 2, 0, 8, 0, 0, 6, 5, 7,
         ]);
-        let mut solver = DfsSolver::new();
+        let solver = DfsSolver::new();
         assert_eq!(solver.unique(&mut board).unwrap(), true);
     }
     #[test]
@@ -136,7 +129,7 @@ mod test {
             7, 0, 0, 4, 3, 0, 5, 6, 0, 0, 0, 5, 9, 0, 0, 1, 1, 9, 0, 3, 0, 2, 0, 0, 0, 9, 0, 8, 5,
             2, 6, 1, 0, 3, 5, 1, 6, 4, 3, 7, 9, 2, 8, 4, 2, 0, 8, 0, 0, 6, 5, 7,
         ]);
-        let mut solver = DfsSolver::new();
+        let solver = DfsSolver::new();
         assert_eq!(solver.unique(&mut board.clone()).unwrap(), true);
         assert_eq!(solver.unique(&mut board.clone()).unwrap(), true);
     }
