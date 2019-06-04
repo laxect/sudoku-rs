@@ -1,33 +1,40 @@
+//! the solve mod of sudoku
+//! have solve and unique function
+//!
+//! solve
+//! ```
+//! use sudoku_rs::{board, solver};
+//!
+//! let mut b = board::Board::new();
+//! let s = solver::DfsSolver::new();
+//! s.solve(&mut b);
+//! println!("{}", b);
+//! ```
+//!
+//! unique check
+//! ```
+//! use sudoku_rs::{board::Board, solver::DfsSolver};
+//!
+//! let mut board = Board::new();
+//! let solver = DfsSolver::new();
+//! assert_eq!(solver.unique(&mut board).unwrap(), false);
+//! ```
 use crate::{board::Board, error::SuDoKuError};
 
 type Slot = (usize, usize, usize);
 
 /// solve a sudoku
 /// in the dfs way
-/// ```
-/// use sudoku_rs::{board, solver};
-///
-/// let mut b = board::Board::new();
-/// let s = solver::DfsSolver::new();
-/// s.solve(&mut b);
-/// println!("{}", b);
-/// ```
 #[derive(Default, Clone, Copy)]
-pub struct DfsSolver {}
+pub struct DfsSolver;
 
 impl DfsSolver {
+    /// return a new solver
     pub fn new() -> DfsSolver {
         DfsSolver {}
     }
 
     /// check if the solve of a sudoku is unique
-    /// ```
-    /// use sudoku_rs::{board::Board, solver::DfsSolver};
-    ///
-    /// let mut board = Board::new();
-    /// let solver = DfsSolver::new();
-    /// assert_eq!(solver.unique(&mut board).unwrap(), false);
-    /// ```
     pub fn unique(self, board: &mut Board) -> Result<bool, SuDoKuError> {
         let path = Vec::with_capacity(81);
         let path = self.solve_do(board, path)?;

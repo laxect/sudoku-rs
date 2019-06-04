@@ -1,3 +1,14 @@
+//! use human-like dfs algorithm for sudoku grade
+//! ```
+//! use sudoku_rs::{board, grade};
+//!
+//! let mut b = board::Board::new();
+//! let g = grade::Grade::new();
+//! let scores = g.grade(&mut b);
+//! println!("{:?}", scores);
+//! ```
+//! this mod doesn't care of unique
+//! but inunique sudoku's complexity will be higher on average
 use crate::board;
 
 /// instand of grand return
@@ -9,19 +20,8 @@ pub struct Score {
     pub empty_slot_count: usize,
 }
 
-/// use human-like dfs algorithm for sudoku grade
-/// ```
-/// use sudoku_rs::{board, grade};
-///
-/// let mut b = board::Board::new();
-/// let g = grade::Grade::new();
-/// let scores = g.grade(&mut b);
-/// println!("{:?}", scores);
-/// ```
-/// this mod doesn't care of unique
-/// but inunique sudoku's complexity will be higher on average
 #[derive(Default, Copy, Clone)]
-pub struct Grade {}
+pub struct Grade;
 
 impl Grade {
     /// return a new Grade struct
