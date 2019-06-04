@@ -30,7 +30,7 @@ impl Board {
     /// 0 for empty and 1..=9 for value
     /// ```
     /// use sudoku_rs::board::Board;
-    /// 
+    ///
     /// let b = Board::from_vec(vec![
     ///     0, 0, 0, 0, 0, 0, 0, 0, 0,
     ///     0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -109,7 +109,7 @@ impl Board {
     /// check a solt is empty of not
     /// ```
     /// use sudoku_rs::board::Board;
-    /// 
+    ///
     /// let mut b = Board::new();
     /// b.set(1, 2, 3).unwrap();
     /// assert!(b.is_empty(1, 1));

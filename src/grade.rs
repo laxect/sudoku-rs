@@ -12,7 +12,7 @@ pub struct Score {
 /// use human-like dfs algorithm for sudoku grade
 /// ```
 /// use sudoku_rs::{board, grade};
-/// 
+///
 /// let mut b = board::Board::new();
 /// let g = grade::Grade::new();
 /// let scores = g.grade(&mut b);
@@ -25,7 +25,7 @@ pub struct Grade {}
 
 impl Grade {
     /// return a new Grade struct
-    pub fn new () -> Self {
+    pub fn new() -> Self {
         Grade {}
     }
 

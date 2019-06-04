@@ -6,7 +6,7 @@ type Slot = (usize, usize, usize);
 /// in the dfs way
 /// ```
 /// use sudoku_rs::{board, solver};
-/// 
+///
 /// let mut b = board::Board::new();
 /// let mut s = solver::DfsSolver::new();
 /// s.solve(&mut b);
@@ -19,28 +19,29 @@ pub struct DfsSolver {
 
 impl DfsSolver {
     pub fn new() -> DfsSolver {
-        DfsSolver {
-            path: None
-        }
+        DfsSolver { path: None }
     }
 
     /// check if the solve of a sudoku is unique
     /// ```
     /// use sudoku_rs::{board::Board, solver::DfsSolver};
-    /// 
+    ///
     /// let mut board = Board::new();
     /// let mut solver = DfsSolver::new();
     /// assert_eq!(solver.unique(&mut board).unwrap(), false);
     /// ```
     pub fn unique(&mut self, board: &mut Board) -> Result<bool, SuDoKuError> {
-        self.solve(board)?;
-        Ok(self.solve(board).is_err())
+        self.solve_do(board)?;
+        Ok(self.solve_do(board).is_err())
     }
 
     /// find a solve of sudoku in dfs way
-    /// if you nedd to deal with a new sudoku puzzle
-    /// you must reset solver at first
     pub fn solve(&mut self, board: &mut Board) -> Result<Vec<Slot>, SuDoKuError> {
+        self.path = None;
+        self.solve_do(board)
+    }
+
+    fn solve_do(&mut self, board: &mut Board) -> Result<Vec<Slot>, SuDoKuError> {
         let mut queue = match self.path.take() {
             Some(pre) => pre,
             None => Vec::with_capacity(81),
@@ -54,8 +55,9 @@ impl DfsSolver {
                     }
                 }
             }
-            // avaliable count no use now
+            // sort by avaliable count
             queue.sort_unstable_by(|a, b| a.2.cmp(&b.2));
+            // avaliable count no use now
             queue.iter_mut().for_each(|item| item.2 = 0);
             0
         } else {
@@ -69,16 +71,14 @@ impl DfsSolver {
                 cur += 1;
                 *ind += 1;
                 board.unchecked_set(x, y, *upper_than_now);
-            } else {
+            } else if cur != 0 {
                 // no avaliable value
-                if cur != 0 {
-                    cur -= 1;
-                    board.unset(x, y);
-                    *ind = 0;
-                } else {
-                    // no avaliable slot
-                    return Err(SuDoKuError::NotSolveable);
-                }
+                cur -= 1;
+                board.unset(x, y);
+                *ind = 0;
+            } else {
+                // no avaliable slot
+                return Err(SuDoKuError::NotSolveable);
             }
         }
         self.path.replace(queue.clone());
