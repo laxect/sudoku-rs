@@ -27,7 +27,7 @@ assert!(!s.unique(&mut b).unwrap());
 grade
 ```
 use sudoku_rs::{board, grade};
-//!
+
 let mut b = board::Board::new();
 let g = grade::Grade::new();
 let scores = g.grade(&mut b);
