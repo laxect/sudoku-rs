@@ -12,7 +12,7 @@ type Slot = (usize, usize, usize);
 /// s.solve(&mut b);
 /// println!("{}", b);
 /// ```
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Copy)]
 pub struct DfsSolver {}
 
 impl DfsSolver {
@@ -28,19 +28,19 @@ impl DfsSolver {
     /// let solver = DfsSolver::new();
     /// assert_eq!(solver.unique(&mut board).unwrap(), false);
     /// ```
-    pub fn unique(&self, board: &mut Board) -> Result<bool, SuDoKuError> {
+    pub fn unique(self, board: &mut Board) -> Result<bool, SuDoKuError> {
         let path = Vec::with_capacity(81);
         let path = self.solve_do(board, path)?;
         Ok(self.solve_do(board, path).is_err())
     }
 
     /// find a solve of sudoku in dfs way
-    pub fn solve(&self, board: &mut Board) -> Result<Vec<Slot>, SuDoKuError> {
+    pub fn solve(self, board: &mut Board) -> Result<Vec<Slot>, SuDoKuError> {
         let path = Vec::with_capacity(81);
         self.solve_do(board, path)
     }
 
-    fn solve_do(&self, board: &mut Board, mut queue: Vec<Slot>) -> Result<Vec<Slot>, SuDoKuError> {
+    fn solve_do(self, board: &mut Board, mut queue: Vec<Slot>) -> Result<Vec<Slot>, SuDoKuError> {
         let mut cur = if queue.is_empty() {
             for x in 0..9 {
                 for y in 0..9 {
