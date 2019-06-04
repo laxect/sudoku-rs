@@ -38,6 +38,6 @@ println!("{:?}", scores);
 next to do
 
  - [x] dfs solve
- - [ ] unique check
+ - [x] unique check
  - [x] sudoku grade
  - [ ] sudoku gen
