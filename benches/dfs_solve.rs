@@ -2,7 +2,7 @@ use criterion::*;
 
 fn standard_sudoku(input: Vec<u8>) {
     let mut board = sudoku_rs::board::Board::from_vec(input);
-    let solver = sudoku_rs::solver::DfsSolver::new();
+    let mut solver = sudoku_rs::solver::DfsSolver::new();
     assert!(solver.solve(&mut board).is_ok());
 }
 

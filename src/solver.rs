@@ -8,33 +8,59 @@ type Slot = (usize, usize, usize);
 /// use sudoku_rs::{board, solver};
 /// 
 /// let mut b = board::Board::new();
-/// let s = solver::DfsSolver::new();
+/// let mut s = solver::DfsSolver::new();
 /// s.solve(&mut b);
 /// println!("{}", b);
 /// ```
 #[derive(Default, Clone)]
-pub struct DfsSolver {}
+pub struct DfsSolver {
+    path: Option<Vec<Slot>>,
+}
 
 impl DfsSolver {
     pub fn new() -> DfsSolver {
-        DfsSolver {}
+        DfsSolver {
+            path: None
+        }
+    }
+
+    /// check if the solve of a sudoku is unique
+    /// ```
+    /// use sudoku_rs::{board::Board, solver::DfsSolver};
+    /// 
+    /// let mut board = Board::new();
+    /// let mut solver = DfsSolver::new();
+    /// assert_eq!(solver.unique(&mut board).unwrap(), false);
+    /// ```
+    pub fn unique(&mut self, board: &mut Board) -> Result<bool, SuDoKuError> {
+        self.solve(board)?;
+        Ok(self.solve(board).is_err())
     }
 
     /// find a solve of sudoku in dfs way
-    pub fn solve(&self, board: &mut Board) -> Result<Vec<Slot>, SuDoKuError> {
-        let mut queue = Vec::with_capacity(81);
-        for x in 0..9 {
-            for y in 0..9 {
-                if board.is_empty(x, y) {
-                    // (x, y, avaliable_count)
-                    queue.push((x, y, board.avaliable_count(x, y)));
+    /// if you nedd to deal with a new sudoku puzzle
+    /// you must reset solver at first
+    pub fn solve(&mut self, board: &mut Board) -> Result<Vec<Slot>, SuDoKuError> {
+        let mut queue = match self.path.take() {
+            Some(pre) => pre,
+            None => Vec::with_capacity(81),
+        };
+        let mut cur = if queue.is_empty() {
+            for x in 0..9 {
+                for y in 0..9 {
+                    if board.is_empty(x, y) {
+                        // (x, y, avaliable_count)
+                        queue.push((x, y, board.avaliable_count(x, y)));
+                    }
                 }
             }
-        }
-        // avaliable count no use now
-        queue.sort_unstable_by(|a, b| a.2.cmp(&b.2));
-        queue.iter_mut().for_each(|item| item.2 = 0);
-        let mut cur = 0;
+            // avaliable count no use now
+            queue.sort_unstable_by(|a, b| a.2.cmp(&b.2));
+            queue.iter_mut().for_each(|item| item.2 = 0);
+            0
+        } else {
+            queue.len() - 1
+        };
         // (x, y, last_ind)
         while let Some((xr, yr, ind)) = queue.get_mut(cur) {
             let x = *xr;
@@ -55,6 +81,7 @@ impl DfsSolver {
                 }
             }
         }
+        self.path.replace(queue.clone());
         Ok(queue)
     }
 }
@@ -69,7 +96,7 @@ mod test {
             7, 0, 0, 4, 3, 0, 5, 6, 0, 0, 0, 5, 9, 0, 0, 1, 1, 9, 0, 3, 0, 2, 0, 0, 0, 9, 0, 8, 5,
             2, 6, 1, 0, 3, 5, 1, 6, 4, 3, 7, 9, 2, 8, 4, 2, 0, 8, 0, 0, 6, 5, 7,
         ]);
-        let solver = DfsSolver::new();
+        let mut solver = DfsSolver::new();
         assert!(solver.solve(&mut board).is_ok());
         assert_eq!(
             "3 5 1 2 4 8 7 6 9
@@ -84,5 +111,21 @@ mod test {
                 .to_string(),
             format!("{}", board)
         );
+    }
+    #[test]
+    fn multi_solve() {
+        let mut board = Board::new();
+        let mut solver = DfsSolver::new();
+        assert_eq!(solver.unique(&mut board).unwrap(), false);
+    }
+    #[test]
+    fn unique() {
+        let mut board = Board::from_vec(vec![
+            0, 0, 0, 2, 0, 8, 7, 0, 9, 0, 4, 0, 1, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 3, 0, 0, 0, 0, 8,
+            7, 0, 0, 4, 3, 0, 5, 6, 0, 0, 0, 5, 9, 0, 0, 1, 1, 9, 0, 3, 0, 2, 0, 0, 0, 9, 0, 8, 5,
+            2, 6, 1, 0, 3, 5, 1, 6, 4, 3, 7, 9, 2, 8, 4, 2, 0, 8, 0, 0, 6, 5, 7,
+        ]);
+        let mut solver = DfsSolver::new();
+        assert_eq!(solver.unique(&mut board).unwrap(), true);
     }
 }
