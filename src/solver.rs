@@ -31,6 +31,7 @@ impl DfsSolver {
     /// assert_eq!(solver.unique(&mut board).unwrap(), false);
     /// ```
     pub fn unique(&mut self, board: &mut Board) -> Result<bool, SuDoKuError> {
+        self.path = None;
         self.solve_do(board)?;
         Ok(self.solve_do(board).is_err())
     }
@@ -127,5 +128,16 @@ mod test {
         ]);
         let mut solver = DfsSolver::new();
         assert_eq!(solver.unique(&mut board).unwrap(), true);
+    }
+    #[test]
+    fn unique_idempotence() {
+        let board = Board::from_vec(vec![
+            0, 0, 0, 2, 0, 8, 7, 0, 9, 0, 4, 0, 1, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 3, 0, 0, 0, 0, 8,
+            7, 0, 0, 4, 3, 0, 5, 6, 0, 0, 0, 5, 9, 0, 0, 1, 1, 9, 0, 3, 0, 2, 0, 0, 0, 9, 0, 8, 5,
+            2, 6, 1, 0, 3, 5, 1, 6, 4, 3, 7, 9, 2, 8, 4, 2, 0, 8, 0, 0, 6, 5, 7,
+        ]);
+        let mut solver = DfsSolver::new();
+        assert_eq!(solver.unique(&mut board.clone()).unwrap(), true);
+        assert_eq!(solver.unique(&mut board.clone()).unwrap(), true);
     }
 }

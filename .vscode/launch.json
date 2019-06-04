@@ -13,10 +13,10 @@
                     "test",
                     "--no-run",
                     "--lib",
-                    "--package=sudoku"
+                    "--package=sudoku_rs"
                 ],
                 "filter": {
-                    "name": "sudoku",
+                    "name": "sudoku_rs",
                     "kind": "lib"
                 }
             },

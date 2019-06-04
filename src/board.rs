@@ -2,6 +2,7 @@ use crate::{bitset::BitSet, error::*};
 use std::fmt;
 
 /// board struct
+#[derive(Clone)]
 pub struct Board {
     inner: [u8; 81],
     mat: [BitSet; 9],
