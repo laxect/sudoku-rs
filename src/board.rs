@@ -1,15 +1,14 @@
 //! the sudoku board mod
-//! 
+//!
 //! ```
 //! use sudoku_rs::board::Board;
-//! 
+//!
 //! let sudoku_str = "400000805030000000000700000020000060000080400000010000000603070500200000104000000";
 //! let board: Board = sudoku_str.parse().unwrap();
 //! ```
 
 use crate::{bitset::BitSet, error::*};
-use std::fmt;
-use std::num::NonZeroU8;
+use std::{fmt, num::NonZeroU8};
 
 type Grid = Option<NonZeroU8>;
 
@@ -58,7 +57,7 @@ impl Board {
     /// ```
     pub fn from_vec(mut vec: Vec<u8>) -> Self {
         if vec.len() < 81 {
-            vec.append(&mut vec![0; 81-vec.len()]);
+            vec.append(&mut vec![0; 81 - vec.len()]);
         }
         let mut board = Board::new();
         for x in 0..9 {
@@ -267,7 +266,8 @@ mod test {
     }
     #[test]
     fn from_str() {
-        let sudoku = "400000805030000000000700000020000060000080400000010000000603070500200000104000000";
+        let sudoku =
+            "400000805030000000000700000020000060000080400000010000000603070500200000104000000";
         let board: Board = sudoku.parse().unwrap();
         assert_eq!(board.get(6, 3).unwrap().unwrap_or(0), 6);
     }
