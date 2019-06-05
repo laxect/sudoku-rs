@@ -1,10 +1,22 @@
+//! the sudoku board mod
+//! 
+//! ```
+//! use sudoku_rs::board::Board;
+//! 
+//! let sudoku_str = "400000805030000000000700000020000060000080400000010000000603070500200000104000000";
+//! let board: Board = sudoku_str.parse().unwrap();
+//! ```
+
 use crate::{bitset::BitSet, error::*};
 use std::fmt;
+use std::num::NonZeroU8;
+
+type Grid = Option<NonZeroU8>;
 
 /// board struct
 #[derive(Clone)]
 pub struct Board {
-    inner: [u8; 81],
+    inner: [Grid; 81],
     mat: [BitSet; 9],
     x: [BitSet; 9],
     y: [BitSet; 9],
@@ -19,7 +31,7 @@ impl Default for Board {
 impl Board {
     pub fn new() -> Self {
         Board {
-            inner: [0; 81],
+            inner: [None; 81],
             x: [BitSet::new(); 9],
             y: [BitSet::new(); 9],
             mat: [BitSet::new(); 9],
@@ -44,7 +56,10 @@ impl Board {
     ///     0, 0, 0, 0, 0, 0, 0, 0, 0,
     /// ]);
     /// ```
-    pub fn from_vec(vec: Vec<u8>) -> Self {
+    pub fn from_vec(mut vec: Vec<u8>) -> Self {
+        if vec.len() < 81 {
+            vec.append(&mut vec![0; 81-vec.len()]);
+        }
         let mut board = Board::new();
         for x in 0..9 {
             for y in 0..9 {
@@ -63,13 +78,12 @@ impl Board {
     pub fn unchecked_set(&mut self, x: usize, y: usize, val: u8) {
         let pos = x * 9 + y;
         let mat_id = (x / 3 * 3) + (y / 3);
-        if self.inner[pos] != 0 {
-            let before = self.inner[pos];
+        if let Some(before) = self.inner[pos].map(|nz| nz.get()) {
             self.x[x].remove(before).expect("x: should be a value");
             self.y[y].remove(before).expect("y: should be a value");
             self.mat[mat_id].remove(before).expect("should be a value");
         }
-        self.inner[pos] = val;
+        self.inner[pos] = NonZeroU8::new(val);
         self.x[x].set(val).expect("x: out of bound");
         self.y[y].set(val).expect("y: out of bound");
         self.mat[mat_id].set(val).expect("mat: out of bound");
@@ -80,11 +94,7 @@ impl Board {
     pub fn unchecked_get(&self, x: usize, y: usize) -> Option<u8> {
         let pos = x * 9 + y;
         let val = self.inner[pos];
-        if val > 0 && val < 10 {
-            Some(val)
-        } else {
-            None
-        }
+        val.map(|nz| nz.get())
     }
 
     /// set value
@@ -124,14 +134,13 @@ impl Board {
     pub fn unset(&mut self, x: usize, y: usize) {
         let pos = x * 9 + y;
         let mat_id = (x / 3 * 3) + (y / 3);
-        let before = self.inner[pos];
-        if before != 0 {
+        if let Some(before) = self.inner[pos].map(|nz| nz.get()) {
             self.x[x].remove(before).expect("x: should be a value");
             self.y[y].remove(before).expect("y: should be a value");
             self.mat[mat_id]
                 .remove(before)
                 .expect("mat: should be a value");
-            self.inner[pos] = 0;
+            self.inner[pos] = None;
         }
     }
 
@@ -140,8 +149,9 @@ impl Board {
         let pos = x * 9 + y;
         let mat_id = (x / 3 * 3) + (y / 3);
         let mut cross = self.x[x] | self.y[y] | self.mat[mat_id];
-        let this = self.inner[pos];
-        cross.remove(this).expect("range out");
+        if let Some(this) = self.inner[pos] {
+            cross.remove(this.get()).expect("range out");
+        }
         cross.reverse(1..10)
     }
 
@@ -150,8 +160,9 @@ impl Board {
         let pos = x * 9 + y;
         let mat_id = (x / 3 * 3) + (y / 3);
         let mut cross = self.x[x] | self.y[y] | self.mat[mat_id];
-        let this = self.inner[pos];
-        cross.remove(this).expect("range out");
+        if let Some(this) = self.inner[pos] {
+            cross.remove(this.get()).expect("range out");
+        }
         9 - cross.count()
     }
 
@@ -160,6 +171,24 @@ impl Board {
         self.x.iter().filter(|bs| bs.count() == 9).count() == 9
             && self.y.iter().filter(|bs| bs.count() == 9).count() == 9
             && self.mat.iter().filter(|bs| bs.count() == 9).count() == 9
+    }
+}
+
+impl std::str::FromStr for Board {
+    type Err = SuDoKuError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut board = Board::new();
+        let mut chs = s.chars();
+        for x in 0..9 {
+            for y in 0..9 {
+                let ch = chs.next().unwrap_or('.');
+                if ch.is_ascii_digit() && ch != '0' {
+                    board.set(x, y, ch.to_digit(10).unwrap() as u8)?;
+                }
+            }
+        }
+        Ok(board)
     }
 }
 
@@ -235,5 +264,11 @@ mod test {
         let mut board = Board::new();
         board.set(1, 2, 3).unwrap();
         assert_eq!("_ _ _ _ _ _ _ _ _\n_ _ 3 _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n".to_string(), format!("{}", board));
+    }
+    #[test]
+    fn from_str() {
+        let sudoku = "400000805030000000000700000020000060000080400000010000000603070500200000104000000";
+        let board: Board = sudoku.parse().unwrap();
+        assert_eq!(board.get(6, 3).unwrap().unwrap_or(0), 6);
     }
 }

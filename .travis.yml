@@ -1,8 +1,14 @@
 language: rust
 cache: cargo
 rust:
-  - stable
-  - beta
-  - nightly
+- stable
+- beta
+- nightly
 matrix:
   fast_finish: true
+deploy:
+  provider: cargo
+  on:
+    tags: true
+  token:
+    secure: gkbSG/4aNrct1CvreOCfCnWCC1Wm2Hojye9jqNcbSxu4xcXXumMkI6WCoxImOx79nrLRyY9qAazYp7r1pJ3JddqGyY66/o1R6ko0x4ZgxUQKGcb/foAbhizIZGNL1t6SSLuKrj/EO/fvYNGOy/a72W8IoFKugGhLNh2HIRVPS/RRSw1swU/zYPBI3kOMVFnds8i9T6k++eW23bNUJQpka9GFzvLG8Odo7yKdTedocGF+Q8c/r9M1p9btlxz6alCLkl1FDSTs4dqbwjR2BDrIgDFw1bY4xXPTshgVf+CMTvPEC4T00z+ctsIJwGunGE08sNrDqYToWfS6N4Jim4xx5xVdYz+FGGvGTr+Y20wPPojn9W2pb6ym5YYY9m73fO95jtWfoNfVMrqrmfQjvc7JxOMEItQujeRUTDTUFxuGt3XuhrydQHRxwUTd/p/FzjxfEkWAltQCP7u5dTlIGh5Embmzpu3ok3vGX4MgtEokAvtn7ZmqfJgQXCUeqgLioACRCWWNyEEgOgVVdEhtEbkuPq0uaBwGZBe7FXsslmKbJT+XXUdCltGNL0vsPAxfPBvAh7BosIOmMzw1afJw5SXIcQcLCbFhaYUizZyHfCpjCC7jZW6bG/b/NbdNtWuHucen5YO2ZIqSKjb4SSV0SHdBT1+Z8ga7mmXMnq5jpfJLrtE=
