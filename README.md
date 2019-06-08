@@ -10,6 +10,7 @@ sudoku solve
 use sudoku_rs::{board, solver};
 
 let mut b = board::Board::new();
+let s = solver::DfsSolver::new();
 let mut s = solver::DfsSolver::new();
 s.solve(&mut b);
 println!("{}", b);
