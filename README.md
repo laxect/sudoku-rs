@@ -1,6 +1,7 @@
 # sudoku-rs
 sudoku solve lib
 
+[![Build Status](https://dev.azure.com/GyaraStudio/sudoku/_apis/build/status/laxect.sudoku-rs?branchName=master)](https://dev.azure.com/GyaraStudio/sudoku/_build/latest?definitionId=2&branchName=master)
 <a href="https://travis-ci.org/laxect/sudoku-rs"><img src="https://travis-ci.org/laxect/sudoku-rs.svg?branch=master"></a>
 <a href="https://crates.io/crates/sudoku_rs"><img src="https://img.shields.io/crates/v/sudoku_rs.svg"></a>
 <a href="https://docs.rs/sudoku_rs/"><img src="https://docs.rs/sudoku_rs/badge.svg"></a>
