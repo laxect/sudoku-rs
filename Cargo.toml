@@ -14,7 +14,7 @@ bench = false
 [dependencies]
 
 [dev-dependencies]
-criterion = "0.2.11"
+criterion = "0.3.0"
 
 [[bench]]
 name = "dfs_solve"
