@@ -1,4 +1,4 @@
-//! use human-like dfs algorithm for sudoku grade
+//! use human-like dfs algorithm for sudoku grade.
 //! ```
 //! use sudoku_rs::{board, grade};
 //!
@@ -7,13 +7,13 @@
 //! let scores = g.grade(&mut b);
 //! println!("{:?}", scores);
 //! ```
-//! this mod doesn't care of unique
-//! but inunique sudoku's complexity will be higher on average
+//! this mod doesn't care of unique.
+//! but inunique sudoku's complexity will be higher on average.
 use crate::board;
 
-/// instand of grand return
-/// dfs complexity show us how hard to find a correct solution
-/// and empty slot count show how many slot need to fill
+/// instand of grand return.
+/// dfs complexity show us how hard to find a correct solution.
+/// and empty slot count show how many slot need to fill.
 #[derive(Copy, Clone, Debug)]
 pub struct Score {
     pub dfs_complexity: usize,
@@ -24,12 +24,12 @@ pub struct Score {
 pub struct Grade;
 
 impl Grade {
-    /// return a new Grade struct
+    /// return a new Grade struct.
     pub fn new() -> Self {
         Grade {}
     }
 
-    /// grade a sudoku
+    /// grade a sudoku.
     pub fn grade(self, target: &mut board::Board) -> Score {
         let mut queue = Vec::with_capacity(81);
         for x in 0..9 {

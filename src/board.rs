@@ -31,9 +31,9 @@ impl Board {
         }
     }
 
-    /// gen board from vec
-    /// the len of vec must be 81
-    /// 0 for empty and 1..=9 for value
+    /// gen board from vec.
+    /// the len of vec must be 81.
+    /// 0 for empty and 1..=9 for value.
     /// ```
     /// use sudoku_rs::board::Board;
     ///
@@ -66,8 +66,8 @@ impl Board {
         board
     }
 
-    /// set value in board but not check value
-    /// will also set bitset
+    /// set value in board but not check value.
+    /// will also set bitset.
     pub fn unchecked_set(&mut self, x: usize, y: usize, val: u8) {
         let pos = x * 9 + y;
         let mat_id = (x / 3 * 3) + (y / 3);
@@ -82,15 +82,14 @@ impl Board {
         self.mat[mat_id].set(val).expect("mat: out of bound");
     }
 
-    /// get value
-    /// return a `Option<u8>`
+    /// get value.
     pub fn unchecked_get(&self, x: usize, y: usize) -> Option<u8> {
         let pos = x * 9 + y;
         let val = self.inner[pos];
         val.map(|nz| nz.get())
     }
 
-    /// set value
+    /// set value.
     pub fn set(&mut self, x: usize, y: usize, val: u8) -> Result<(), SuDoKuError> {
         if x >= 9 && y >= 9 {
             return Err(SuDoKuError::OutOfBound);
@@ -102,7 +101,7 @@ impl Board {
         Ok(())
     }
 
-    /// get value
+    /// get value.
     pub fn get(&self, x: usize, y: usize) -> Result<Option<u8>, SuDoKuError> {
         if x >= 9 && y >= 9 {
             return Err(SuDoKuError::OutOfBound);
@@ -110,7 +109,7 @@ impl Board {
         Ok(self.unchecked_get(x, y))
     }
 
-    /// check a solt is empty of not
+    /// check a slot is empty of not.
     /// ```
     /// use sudoku_rs::board::Board;
     ///
@@ -137,7 +136,7 @@ impl Board {
         }
     }
 
-    /// get avaliable values for a slot
+    /// get avaliable values for a slot.
     pub fn avaliable_val(&self, x: usize, y: usize) -> Vec<u8> {
         let pos = x * 9 + y;
         let mat_id = (x / 3 * 3) + (y / 3);
@@ -148,7 +147,7 @@ impl Board {
         cross.reverse(1..10)
     }
 
-    /// get avaliable values count for a slot
+    /// get avaliable values count for a slot.
     pub fn avaliable_count(&self, x: usize, y: usize) -> usize {
         let pos = x * 9 + y;
         let mat_id = (x / 3 * 3) + (y / 3);
@@ -159,7 +158,7 @@ impl Board {
         9 - cross.count()
     }
 
-    /// check if a board is filled
+    /// check if a board is filled.
     pub fn is_win(&self) -> bool {
         self.x.iter().filter(|bs| bs.count() == 9).count() == 9
             && self.y.iter().filter(|bs| bs.count() == 9).count() == 9

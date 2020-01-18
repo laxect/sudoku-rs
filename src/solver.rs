@@ -23,8 +23,7 @@ use crate::{board::Board, error::SuDoKuError};
 
 type Slot = (usize, usize, usize);
 
-/// solve a sudoku
-/// in the dfs way
+/// solve a sudoku in the dfs way
 #[derive(Default, Clone, Copy)]
 pub struct DfsSolver;
 
@@ -90,6 +89,7 @@ impl DfsSolver {
 #[cfg(test)]
 mod test {
     use super::*;
+
     #[test]
     fn solve() {
         let mut board = Board::from_vec(vec![
