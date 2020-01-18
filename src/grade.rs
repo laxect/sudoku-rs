@@ -72,7 +72,7 @@ impl Grade {
                     // doesn't count more than 100_000
                     break;
                 }
-                cur = cur.checked_sub(2).unwrap_or(0);
+                cur = cur.saturating_sub(2);
                 target.unset(x, y);
             }
         }

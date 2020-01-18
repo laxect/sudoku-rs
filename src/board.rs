@@ -21,6 +21,12 @@ pub struct Board {
     y: [BitSet; 9],
 }
 
+impl Default for Board {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Board {
     pub fn new() -> Self {
         Board {
