@@ -86,6 +86,7 @@ impl Grade {
 #[cfg(test)]
 mod test {
     use super::*;
+
     #[test]
     fn grade_0() {
         let mut b = board::Board::from_vec(vec![
@@ -97,6 +98,7 @@ mod test {
         let score = g.grade(&mut b);
         assert_eq!(score.dfs_complexity, 1);
     }
+
     #[test]
     fn grade_9() {
         let mut b = board::Board::from_vec(vec![
@@ -108,6 +110,7 @@ mod test {
         let score = g.grade(&mut b);
         assert_eq!(score.dfs_complexity, 2);
     }
+
     #[test]
     fn grade_n() {
         let mut b = board::Board::from_vec(vec![

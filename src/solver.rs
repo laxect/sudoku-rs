@@ -110,15 +110,17 @@ mod test {
 5 1 6 4 3 7 9 2 8
 4 2 3 8 9 1 6 5 7\n"
                 .to_string(),
-            format!("{}", board)
+            board.to_string(),
         );
     }
+
     #[test]
     fn multi_solve() {
         let mut board = Board::new();
         let solver = DfsSolver::new();
         assert_eq!(solver.unique(&mut board).unwrap(), false);
     }
+
     #[test]
     fn unique() {
         let mut board = Board::from_vec(vec![
@@ -129,6 +131,7 @@ mod test {
         let solver = DfsSolver::new();
         assert_eq!(solver.unique(&mut board).unwrap(), true);
     }
+
     #[test]
     fn unique_idempotence() {
         let board = Board::from_vec(vec![

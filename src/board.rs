@@ -21,12 +21,6 @@ pub struct Board {
     y: [BitSet; 9],
 }
 
-impl Default for Board {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl Board {
     pub fn new() -> Self {
         Board {
@@ -214,16 +208,19 @@ impl fmt::Display for Board {
 #[cfg(test)]
 mod test {
     use super::*;
+
     #[test]
     fn set_edge_0() {
         let mut board = Board::new();
         board.set(0, 0, 1).unwrap();
     }
+
     #[test]
     fn set_edge_81() {
         let mut board = Board::new();
         board.set(8, 8, 9).unwrap();
     }
+
     #[test]
     fn win_check() {
         let mut board = Board::from_vec(vec![
@@ -235,6 +232,7 @@ mod test {
         board.unchecked_set(0, 0, 1);
         assert!(!board.is_win());
     }
+
     #[test]
     fn empty() {
         let mut board = Board::new();
@@ -242,6 +240,7 @@ mod test {
         assert!(!board.is_empty(1, 2));
         assert!(board.is_empty(2, 3));
     }
+
     #[test]
     fn avaliable_count() {
         let mut board = Board::new();
@@ -250,6 +249,7 @@ mod test {
         board.set(1, 3, 7).unwrap();
         assert_eq!(board.avaliable_count(1, 3), 7);
     }
+
     #[test]
     fn avaliable_val() {
         let mut board = Board::new();
@@ -258,12 +258,14 @@ mod test {
         board.set(1, 3, 7).unwrap();
         assert_eq!(board.avaliable_val(1, 3), vec![1, 2, 5, 6, 7, 8, 9]);
     }
+
     #[test]
     fn display() {
         let mut board = Board::new();
         board.set(1, 2, 3).unwrap();
         assert_eq!("_ _ _ _ _ _ _ _ _\n_ _ 3 _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _\n".to_string(), format!("{}", board));
     }
+
     #[test]
     fn from_str() {
         let sudoku =

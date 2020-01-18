@@ -2,7 +2,7 @@ use crate::error::*;
 use std::ops::BitOr;
 
 #[derive(Default, Copy, Clone)]
-pub struct BitSet {
+pub(crate) struct BitSet {
     inner: u16,
 }
 
